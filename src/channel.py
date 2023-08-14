@@ -1,6 +1,6 @@
 from googleapiclient.discovery import build
 import os
-
+import json
 
 class Channel:
     """Класс для ютуб-канала"""
@@ -9,9 +9,32 @@ class Channel:
 
     def __init__(self, channel_id: str) -> None:
         """Экземпляр инициализируется id канала. Дальше все данные будут подтягиваться по API."""
-        self.channel_id = channel_id
+        self.__channel_id = channel_id
+        info = self.get_channel_data()
+        self.title = info['snippet']['title']
+        self.description = info['snippet']['description']
+        self.url = f'https://www.youtube.com/channel/{self.__channel_id}'
+        self.subscriber_count = info['statistics']['subscriberCount']
+        self.video_count = info['statistics']['videoCount']
+        self.view_count = info['statistics']['viewCount']
 
-    def print_info(self) -> None:
-        """Выводит в консоль информацию о канале."""
-        channel = self.youtube.channels().list(id=self.channel_id, part='snippet,statistics').execute()
-        print(channel)
+    @property
+    def channel_id(self):
+        return self.__channel_id
+
+    def get_channel_data(self):
+        channel = self.youtube.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
+        channel = channel['items'][0]
+        return channel
+
+    @classmethod
+    def get_service(cls):
+        return build('youtube', 'v3', developerKey=cls.api_key)
+
+    def to_json(self, new_file):
+        with open (new_file, 'w') as file:
+            json.dump(self.__dict__, file)
+
+
+moscowpython = Channel('UC-OVMPlMA3-YCIeg4z5z23A')
+print(moscowpython.description)
