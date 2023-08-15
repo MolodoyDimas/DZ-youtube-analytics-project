@@ -18,6 +18,27 @@ class Channel:
         self.video_count = info['statistics']['videoCount']
         self.view_count = info['statistics']['viewCount']
 
+    def __str__(self):
+        return f'{self.title} ({self.url})'
+
+    def __add__(self, other):
+        return int(self.subscriber_count) + int(other.subscriber_count)
+
+    def __sub__(self, other):
+        return int(self.subscriber_count) - int(other.subscriber_count)
+
+    def __gt__(self, other):
+        return self.subscriber_count > other.subscriber_count
+
+    def __le__(self, other):
+        return self.subscriber_count <= other.subscriber_count
+
+    def __ge__(self, other):
+        return self.subscriber_count >= other.subscriber_count
+
+    def __eq__(self, other):
+        return self.subscriber_count == other.subscriber_count
+
     @property
     def channel_id(self):
         return self.__channel_id
@@ -34,7 +55,3 @@ class Channel:
     def to_json(self, new_file):
         with open (new_file, 'w') as file:
             json.dump(self.__dict__, file)
-
-
-moscowpython = Channel('UC-OVMPlMA3-YCIeg4z5z23A')
-print(moscowpython.description)
