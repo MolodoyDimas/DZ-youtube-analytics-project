@@ -2,6 +2,7 @@ from googleapiclient.discovery import build
 import os
 import json
 
+
 class Channel:
     """Класс для ютуб-канала"""
     api_key: str = os.getenv('DZ_API_KEY')
@@ -53,5 +54,5 @@ class Channel:
         return build('youtube', 'v3', developerKey=cls.api_key)
 
     def to_json(self, new_file):
-        with open (new_file, 'w') as file:
+        with open(new_file, 'w') as file:
             json.dump(self.__dict__, file)
