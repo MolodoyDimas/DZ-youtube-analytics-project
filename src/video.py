@@ -9,17 +9,27 @@ class Video:
     def __init__(self, video_id: str):
         self.video_id = video_id
         info = self.get_channel_data()
-        self.title = info['snippet']['title']
-        self.url = f'https://www.youtube.com/watch?v={self.video_id}' #не знаю как определить начало ссылки. эта ссылка работает через watch?v=. почему и как узнать?
-        self.number_views = info['statistics']['viewCount']
-        self.number_likes = info['statistics']['likeCount']
-        self.playlist_id = info['statistics']
+        if info:
+            self.title = info['snippet']['title']
+            self.url = f'https://www.youtube.com/watch?v={self.video_id}' #не знаю как определить начало ссылки. эта ссылка работает через watch?v=. почему и как узнать?
+            self.number_views = info['statistics']['viewCount']
+            self.number_likes = info['statistics']['likeCount']
+            self.playlist_id = info['statistics']
+        else:
+            self.title = None
+            self.url = None
+            self.number_views = None
+            self.number_likes = None
+            self.playlist_id = None
 
     def get_channel_data(self):
-        channel = self.youtube.videos().list(id=self.video_id, part='snippet,statistics').execute()
-        channel = channel['items'][0]
-        return channel
-
+        try:
+            channel = self.youtube.videos().list(id=self.video_id, part='snippet,statistics').execute()
+            channel = channel['items'][0]
+            return channel
+        except Exception:
+            print('Ошибка')
+            return None
     def __str__(self):
         return self.title
 
@@ -40,4 +50,3 @@ class PLVideo(Video):
 
     def __str__(self):
         return self.title
-
